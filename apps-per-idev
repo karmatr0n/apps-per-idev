@@ -40,8 +40,8 @@ Idevice.device_list.each do |udid|
   instpxy = Idevice::InstProxyClient.attach(idev: idev)
   instpxy.browse.sort { |a,b| a[props.at(0)] <=> b[props.at(0)] }.map do |app|
     print_app_properties app.values_at(*props)
- end
+  end
 
- puts ""
+  puts ""
 end
 
