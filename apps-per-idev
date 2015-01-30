@@ -1,0 +1,48 @@
+#!/usr/bin/env ruby -Ebinary
+#
+# apps-per-idev
+#
+# This programs shows all the installed applications per iDevice connected 
+# to your computer.
+#
+# Author: Alejandro Juarez 
+# Twitter: @karmatr0n
+#
+# Requirements:
+#  - libimobiledevice 1.1.5 or higher
+#  - idevice
+#  - libimobiledevice
+#
+# Usage: apps-per-idev
+#
+
+require 'bundler/setup'
+require 'idevice'
+
+def print_dev_info(idev)
+  ldcli = Idevice::LockdownClient.attach(idev:idev)
+  puts "%-40s    %s" % ["UUID", "Device name"]
+  info = "%-40s => %s" % [idev.udid, ldcli.device_name]
+  puts info
+  puts "-" * info.length
+end
+
+def print_app_properties(cols)
+  cols[2] = cols[2].to_s.slice(0,27) + "..." if cols[2].to_s.size > 30
+  puts "%-15s %-15s %-30s %s/%s" % cols
+end
+
+Idevice.device_list.each do |udid|
+  idev = Idevice::Idevice.attach(udid: udid)
+  print_dev_info idev
+
+  props = %w(ApplicationType CFBundleVersion CFBundleDisplayName Path CFBundleExecutable)
+  print_app_properties props
+  instpxy = Idevice::InstProxyClient.attach(idev: idev)
+  instpxy.browse.sort { |a,b| a[props.at(0)] <=> b[props.at(0)] }.map do |app|
+    print_app_properties app.values_at(*props)
+ end
+
+ puts ""
+end
+
