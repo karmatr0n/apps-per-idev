@@ -13,8 +13,8 @@ Requirements
 ============
 
 * libimobiledevice 1.1.5 or higher
-* ruby 1.9.x or highger
-* idevice gem
+* ruby 1.9.x or higher
+* idevice (rubygem)
 
 Installation
 ============
